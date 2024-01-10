@@ -9,6 +9,7 @@ def filter_datum(
         fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
     """returns the log message obfuscated"""
-    obf = re.compile(
-        fr'({separator}|^)({"|".join(fields)})=([^{separator}]+)')
-    return obf.sub(fr'\1\2={redaction}{separator}', message)
+    return re.sub(
+        fr'({separator}|^)({"|".join(fields)})=([^{separator}]+)',
+        fr'\1\2={redaction}{separator}', message
+    )
