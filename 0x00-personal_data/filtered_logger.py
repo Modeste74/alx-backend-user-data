@@ -35,3 +35,17 @@ def filter_datum(
         fr'({separator}|^)({"|".join(fields)})=([^{separator}]+)',
         fr'\1\2={redaction}', message
     )
+
+
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    """Returns a logging.Logger object"""
+    logger = logging.getLogger("user-data")
+    loogger.setLevel(logging.INFO)
+    stream_handler = logging.StreamHeader()
+    stream_handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    logger.addHandler(stream_handler)
+    logger.propagate = False
+    return logger
