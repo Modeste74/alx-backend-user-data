@@ -67,3 +67,23 @@ def get_db() -> MySQLConnection:
         database=db_name
     )
     return connector
+
+
+def main():
+    """Obtaining a database connection and logging user data."""
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM users;")
+
+    log = get_logger()
+    for row in cursor:
+        filtered_data = filter_row_dict(dict(zip(PII_FIELDS, row)))
+        log.info(filtered_data)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
