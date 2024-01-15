@@ -32,3 +32,11 @@ def autho() -> str:
     abort with 401 code trigeering the 401 error
     """
     return abort(401)
+
+
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbi() -> str:
+    """
+    aborts with a 403 error
+    """
+    return abort(403)
