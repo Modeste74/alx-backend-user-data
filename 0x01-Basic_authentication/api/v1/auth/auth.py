@@ -13,7 +13,19 @@ class Auth:
         if excluded_paths is None or not excluded_paths:
             return True
         path = path.rstrip('/') + '/'
-        return path not in excluded_paths
+        for excluded_path in excluded_paths:
+            if self._path_matches_wildcard(path, excluded_path):
+                return False
+        return True
+
+    def _path_matches_wildcard(
+            self, path: str, wildcard_path: str) -> bool:
+        """checks if path matches wildcard path"""
+        wildcard_path = wildcard_path.rstrip('/') + '/'
+        if wildcard_path.endswith('*'):
+            return path.startswith(wildcard_path[:-1])
+        else:
+            return path == wildcard_path
 
     def authorization_header(self, request=None) -> str:
         """returns None - request will be the Flask request object"""
