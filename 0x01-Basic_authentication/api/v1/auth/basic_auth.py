@@ -1,4 +1,4 @@
-#!/usr/bin/env pthyon3
+#!/usr/bin/env python3
 """defines a sub class BasicAuth"""
 from api.v1.auth.auth import Auth
 
