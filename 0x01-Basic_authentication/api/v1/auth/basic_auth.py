@@ -50,7 +50,7 @@ class BasicAuth(Auth):
         return user_email, user_password
 
     def user_object_from_credentials(
-            self, user_email: str, user_pwd: str) -> User:
+            self, user_email: str, user_pwd: str) -> TypeVar('User'):
         """ returns the User instance based on his email and password"""
         if user_email is None or not isinstance(user_email, str):
             return None
