@@ -52,17 +52,19 @@ class BasicAuth(Auth):
     def user_object_from_credentials(
             self, user_email: str, user_pwd: str) -> TypeVar('User'):
         """ returns the User instance based on his email and password"""
+        user = User()
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        user_list = User.search({"email": user_email})
-        if not user_list:
+        try:
+            dictionary = {"email": user_email, }
+            user = user.search(dictionary)[0]
+        except Exception:
             return None
-        found_user = user_list[0]
-        if not found_user.is_valid_password(user_pwd):
+        if not user.is_valid_password(user_pwd):
             return None
-        return found_user
+        return user
 
     def current_ser(self, request=None) -> TypeVar('User'):
         """overloads Auth and retrieves the
