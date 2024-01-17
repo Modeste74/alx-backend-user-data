@@ -57,14 +57,13 @@ class BasicAuth(Auth):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        try:
-            dictionary = {"email": user_email, }
-            user = user.search(dictionary)[0]
-        except Exception:
+        user_list = user.search({"email": user_email})
+        if not user_list:
             return None
-        if not user.is_valid_password(user_pwd):
+        found_user = user_list[0]
+        if not found_user.is_valid_password(user_pwd):
             return None
-        return user
+        return found_user
 
     def current_ser(self, request=None) -> TypeVar('User'):
         """overloads Auth and retrieves the
