@@ -50,13 +50,14 @@ class BasicAuth(Auth):
         return user_email, user_password
 
     def user_object_from_credentials(
-            self, user_email: str, user_pwd: str) -> User:
+            self, user_email: str, user_pwd: str) -> TypeVar('User'):
         """ returns the User instance based on his email and password"""
+        user = User()
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        user_list = User.search({"email": user_email})
+        user_list = user.search({"email": user_email})
         if not user_list:
             return None
         found_user = user_list[0]
@@ -64,17 +65,17 @@ class BasicAuth(Auth):
             return None
         return found_user
 
-    def current_ser(self, request=None) -> TypeVar('User'):
+    def current_user(self, request=None) -> TypeVar('User'):
         """overloads Auth and retrieves the
         User instance for a request"""
-        authorization_header = super().authorization_header(request)
-        base64_authorization_header = self.extract_base64_authorization_header(
-                base64_authorization_header)
-        base64_initialize = self.decode_base64_authorization_header
-        decoded_base64_authorization_header = base64_initialize(
-                base64_authorization_header)
-        credential_ext = self.extract_user_credentials
-        user_email, user_pwd = credential_ext(
-                decoded_base64_authorization_header)
+        if request is None:
+            return None
+        authorization_header = self.authorization_header(request)
+        base64_auth_header = self.extract_base64_authorization_header(
+                    authorization_header)
+        base64_decode = self.decode_base64_authorization_header(
+                    base64_auth_header)
+        user_email, user_pwd = self.extract_user_credentials(
+                    base64_decode)
         user = self.user_object_from_credentials(user_email, user_pwd)
         return user
