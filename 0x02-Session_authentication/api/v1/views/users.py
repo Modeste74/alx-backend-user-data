@@ -125,3 +125,12 @@ def update_user(user_id: str = None) -> str:
         user.last_name = rj.get('last_name')
     user.save()
     return jsonify(user.to_json()), 200
+
+
+@app_views.route('/users/me', methods['GET'], strict_slashes=False)
+def get_authenticated_user():
+    """Retrieve the authenticated User object."""
+    if hasattr(request, 'current_user') and request.current_ser:
+        return jsonify(request.current_user.to_json())
+    else:
+        return jsonify({"error": "User not authenticated"}), 401
