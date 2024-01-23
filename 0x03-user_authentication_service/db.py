@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from sqlalchemy.exc import NoResultFound, InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from user import Base, User
 
 
@@ -47,11 +48,9 @@ class DB:
     def find_user_by(self, **kwargs) -> User:
         """Finds user based on given criteria"""
         try:
-            users = self._session.query(User).filter_by(**kwargs).all()
+            users = self._session.query(User).filter_by(**kwargs).first()
             if not users:
                 raise NoResultFound
-            if len(users) == 1:
-                return users[0]
             return users
         except InvalidRequestError as e:
             raise e
