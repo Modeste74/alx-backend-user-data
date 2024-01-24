@@ -47,6 +47,23 @@ def login():
         abort(401)
 
 
+@app.route('/sessions', methods=['DELETE'])
+def logout():
+    """finds the user using the session_id cookie and
+    destroys the session_id"""
+    try:
+        session_id = request.cookies.get('session_id')
+        if not session_id:
+            abort(403)
+        user = AUTH.get_user_from_session_id(session_id=session_id)
+        if not user:
+            abort(403)
+        AUTH.destroy_session(user.id)
+        return redirect('/')
+    except Exception as e:
+        abort(403)
+
+
 @app.route('/profile', methods=['GET'])
 def profile():
     """use the session_id to find user and return a
