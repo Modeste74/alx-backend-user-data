@@ -47,5 +47,21 @@ def login():
         abort(401)
 
 
+@app.route('/profile', methods=['GET'])
+def profile():
+    """use the session_id to find user and return a
+    jsonfied response else return a 403 http status"""
+    session_id = request.cookies.get('session_id')
+    if session_id is None:
+        abort(403)
+    try:
+        user = AUTH.get_user_from_session_id(session_id=session_id)
+        if not user:
+            abort(403)
+        return jsonify({"email": user.email}), 200
+    except Exception as e:
+        abort(403)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
